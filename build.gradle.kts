@@ -473,14 +473,12 @@ fun Project.configureForgeModule(versionKey: String, config: VersionConfig) {
         modLoaders.add("forge")
     }
 
-    if (isLegacyVersion) {
-        tasks.withType(Jar::class) {
-            manifest.attributes.run {
-                this["FMLCorePluginContainsFMLMod"] = "true"
-                this["ForceLoadAsMod"] = "true"
-                this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-                this["MixinConfigs"] = "${rootProject.property("mod_id")}.mixins.json"
-            }
+    tasks.withType(Jar::class) {
+        manifest.attributes.run {
+            this["FMLCorePluginContainsFMLMod"] = "true"
+            this["ForceLoadAsMod"] = "true"
+            this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
+            this["MixinConfigs"] = "${rootProject.property("mod_id")}.mixins.json"
         }
     }
 
