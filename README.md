@@ -26,3 +26,14 @@ LAN Properties is a mod that gives you access to all server.properties settings 
 ## How do I use it?
 
 Simply install the mod and click "Open to LAN" as normal. There will be a configuration button that lets you customize all server settings.
+
+### Hybrid Mode
+
+LAN Properties introduces an additional property called **`hybrid-mode`**.
+
+When `online-mode` is disabled but `hybrid-mode` is enabled, the server attempts to authenticate players in a "best of both worlds" approach:
+
+- **If an account with the player’s username exists** → The server fetches the official UUID from Mojang’s session servers.
+- **If the session servers are unreachable or the username does not belong to a valid account** → The server falls back to using an offline UUID.
+
+This ensures that premium (online) players always keep their correct UUID, while still allowing offline players to join when needed.

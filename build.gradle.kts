@@ -71,6 +71,30 @@ val versionConfigs = mapOf(
         forgeVersion = "49.2.0",
         neoForgeVersion = "250",
         quiltVersion = "0.29.1"
+    ),
+    "v1_20" to VersionConfig(
+        minecraftVersion = "1.20.2",
+        supportedMinecraftVersions = listOf("1.20", "1.20.1", "1.20.2"),
+        javaVersion = JavaVersion.VERSION_17,
+        mappings = MappingsConfig(
+            provider = "mojmap"
+        ),
+        fabricLoaderVersion = "0.16.14",
+        forgeVersion = "48.1.0",
+        neoForgeVersion = "93",
+        quiltVersion = "0.29.1"
+    ),
+    "v1_12" to VersionConfig(
+        minecraftVersion = "1.12.2",
+        supportedMinecraftVersions = listOf("1.12", "1.12.1", "1.12.2"),
+        javaVersion = JavaVersion.VERSION_1_8,
+        mappings = MappingsConfig(
+            provider = "mcp",
+            version = "39-1.12"
+        ),
+        fabricLoaderVersion = "0.16.14",
+        forgeVersion = "14.23.5.2847",
+        ornitheVersion = "0.16.14"
     )
 )
 
@@ -449,14 +473,12 @@ fun Project.configureForgeModule(versionKey: String, config: VersionConfig) {
         modLoaders.add("forge")
     }
 
-    if (isLegacyVersion) {
-        tasks.withType(Jar::class) {
-            manifest.attributes.run {
-                this["FMLCorePluginContainsFMLMod"] = "true"
-                this["ForceLoadAsMod"] = "true"
-                this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-                this["MixinConfigs"] = "${rootProject.property("mod_id")}.mixins.json"
-            }
+    tasks.withType(Jar::class) {
+        manifest.attributes.run {
+            this["FMLCorePluginContainsFMLMod"] = "true"
+            this["ForceLoadAsMod"] = "true"
+            this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
+            this["MixinConfigs"] = "${rootProject.property("mod_id")}.mixins.json"
         }
     }
 

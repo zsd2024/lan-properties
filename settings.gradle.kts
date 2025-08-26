@@ -37,6 +37,8 @@ val supported = mapOf(
     "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
     "v1_21" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
     "v1_20_3" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+    "v1_20" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+    "v1_12" to listOf("common", "fabric", "forge", "ornithe"),
 )
 
 supported.forEach { (version, loaders) ->
