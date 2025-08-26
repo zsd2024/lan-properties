@@ -62,7 +62,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
 
     @Unique
     private void lan_properties$updateSettings() {
-        this.setOnlineMode(this.lan_properties$settings.getBooleanProperty("online-mode", true));
+        this.setOnlineMode(this.lan_properties$settings.lan_properties$onlineMode());
         this.setCanSpawnAnimals(this.lan_properties$settings.getBooleanProperty("spawn-animals", true));
         this.setCanSpawnNPCs(this.lan_properties$settings.getBooleanProperty("spawn-npcs", true));
         this.setAllowPvp(this.lan_properties$settings.getBooleanProperty("pvp", true));
@@ -136,6 +136,10 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
 
     public EnumDifficulty getDifficulty() {
         return EnumDifficulty.byId(this.lan_properties$settings.getIntProperty("difficulty", EnumDifficulty.NORMAL.getId()));
+    }
+
+    public boolean isServerInOnlineMode() {
+        return this.lan_properties$settings.lan_properties$onlineMode();
     }
 
     public boolean isHardcore() {
