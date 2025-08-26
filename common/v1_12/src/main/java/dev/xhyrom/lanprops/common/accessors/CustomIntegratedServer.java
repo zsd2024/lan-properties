@@ -1,6 +1,6 @@
 package dev.xhyrom.lanprops.common.accessors;
 
-import net.minecraft.server.dedicated.PropertyManager;
+import dev.xhyrom.lanprops.common.manager.PropertyManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
