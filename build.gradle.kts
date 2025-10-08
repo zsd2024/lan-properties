@@ -350,11 +350,20 @@ fun Project.configureFabricModule(versionKey: String, config: VersionConfig) {
         }.flatMap { it }
 
         file.set(remapJarProvider)
-        displayName = "LAN Properties Fabric ${modVersion}+${formatSupportedVersions(config.supportedMinecraftVersions)}"
 
-        modLoaders.add("fabric")
+        if (!isLegacyFabric) {
+            displayName = "LAN Properties Fabric ${modVersion}+${formatSupportedVersions(config.supportedMinecraftVersions)}"
 
-        requires("fabric-api")
+            modLoaders.add("fabric")
+
+            requires("fabric-api")
+        } else {
+            displayName = "LAN Properties Legacy Fabric ${modVersion}+${formatSupportedVersions(config.supportedMinecraftVersions)}"
+
+            modLoaders.add("legacy-fabric")
+
+            requires("legacy-fabric-api")
+        }
     }
 
     publishMods.curseforge("curseforge-fabric-$versionKey") {
