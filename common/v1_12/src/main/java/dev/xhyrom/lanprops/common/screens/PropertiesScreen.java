@@ -8,7 +8,7 @@ import net.minecraft.client.resources.I18n;
 import org.jetbrains.annotations.Nullable;
 
 public class PropertiesScreen extends GuiScreen {
-    protected String screenTitle = "Properties";
+    protected String screenTitle = "属性";
 
     @Nullable
     private final GuiScreen lastScreen;

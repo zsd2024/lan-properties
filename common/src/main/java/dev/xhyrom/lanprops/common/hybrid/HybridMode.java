@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public final class HybridMode {
     public static UUID onlinePlayerUuid(final String playerName) {
-        AbstractLanPropertiesClient.LOGGER.info("Hybrid mode: fetching UUID for player " + playerName);
+        AbstractLanPropertiesClient.LOGGER.info("混合模式：正在获取玩家 " + playerName + " 的UUID");
 
         try {
             final URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + playerName);
@@ -43,7 +43,7 @@ public final class HybridMode {
                     "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
                     "$1-$2-$3-$4-$5"));
         } catch (Exception e) {
-            AbstractLanPropertiesClient.LOGGER.error("Hybrid mode: error fetching UUID for player " + playerName, e);
+            AbstractLanPropertiesClient.LOGGER.error("混合模式：获取玩家 " + playerName + " 的UUID时出错", e);
         }
 
         return null;

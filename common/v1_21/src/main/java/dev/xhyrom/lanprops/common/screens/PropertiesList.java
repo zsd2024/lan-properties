@@ -42,7 +42,7 @@ public class PropertiesList extends ContainerObjectSelectionList<PropertiesList.
                     try {
                         this.addEntry(new PropertyEntry(data.name(), data.type()));
                     } catch (IllegalAccessException e) {
-                        LanPropertiesClient.LOGGER.error("Failed to create property entry for '{}'", data.name(), e);
+                        LanPropertiesClient.LOGGER.error("无法为属性'{}'创建条目", data.name(), e);
                     }
                 });
 
@@ -69,7 +69,7 @@ public class PropertiesList extends ContainerObjectSelectionList<PropertiesList.
             this.editWidget = createWidget(type, currentValue, (raw, serialized) -> {
                 properties.put(propertyKey, serialized);
 
-                LanPropertiesClient.LOGGER.info("Updated property '{}' to '{}'", propertyKey, serialized);
+                LanPropertiesClient.LOGGER.info("已将属性'{}'更新为'{}'", propertyKey, serialized);
             });
         }
 

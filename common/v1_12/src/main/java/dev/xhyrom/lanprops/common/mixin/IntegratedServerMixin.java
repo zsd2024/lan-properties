@@ -68,7 +68,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
         this.setAllowPvp(this.lan_properties$settings.getBooleanProperty("pvp", true));
         this.setAllowFlight(this.lan_properties$settings.getBooleanProperty("allow-flight", false));
         this.setResourcePack(this.lan_properties$settings.getStringProperty("resource-pack", ""), this.lan_properties$loadResourcePackSHA());
-        this.setMOTD(this.lan_properties$settings.getStringProperty("motd", "A Minecraft Server"));
+        this.setMOTD(this.lan_properties$settings.getStringProperty("motd", "一个Minecraft服务器"));
         this.setPlayerIdleTimeout(this.lan_properties$settings.getIntProperty("player-idle-timeout", 0));
         if (this.lan_properties$settings.getIntProperty("difficulty", 1) < 0) {
             this.lan_properties$settings.setProperty("difficulty", 0);
@@ -91,9 +91,9 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
     public String lan_properties$loadResourcePackSHA() {
         if (this.lan_properties$settings.hasProperty("resource-pack-hash")) {
             if (this.lan_properties$settings.hasProperty("resource-pack-sha1")) {
-                LOGGER.warn("resource-pack-hash is deprecated and found along side resource-pack-sha1. resource-pack-hash will be ignored.");
+                LOGGER.warn("resource-pack-hash已弃用且与resource-pack-sha1同时存在。resource-pack-hash将被忽略。");
             } else {
-                LOGGER.warn("resource-pack-hash is deprecated. Please use resource-pack-sha1 instead.");
+                LOGGER.warn("resource-pack-hash已弃用。请改用resource-pack-sha1。");
                 this.lan_properties$settings.getStringProperty("resource-pack-sha1", this.lan_properties$settings.getStringProperty("resource-pack-hash", ""));
                 this.lan_properties$settings.removeProperty("resource-pack-hash");
             }
@@ -101,11 +101,11 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
 
         String string = this.lan_properties$settings.getStringProperty("resource-pack-sha1", "");
         if (!string.isEmpty() && !RESOURCE_PACK_SHA1_PATTERN.matcher(string).matches()) {
-            LOGGER.warn("Invalid sha1 for ressource-pack-sha1");
+            LOGGER.warn("ressource-pack-sha1的sha1无效");
         }
 
         if (!this.lan_properties$settings.getStringProperty("resource-pack", "").isEmpty() && string.isEmpty()) {
-            LOGGER.warn("You specified a resource pack without providing a sha1 hash. Pack will be updated on the client only if you change the name of the pack.");
+            LOGGER.warn("您指定了资源包但未提供sha1哈希。仅当您更改资源包名称时，客户端才会更新资源包。");
         }
 
         return string;

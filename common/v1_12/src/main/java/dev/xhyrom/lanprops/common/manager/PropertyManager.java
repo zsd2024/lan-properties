@@ -70,7 +70,7 @@ public class PropertyManager implements CustomDedicatedServerProperties, CustomS
     }
 
     public String lan_properties$motd() {
-        return this.getStringProperty("motd", "A Minecraft Server");
+        return this.getStringProperty("motd", "一个Minecraft服务器");
     }
 
     public int lan_properties$playerIdleTimeout() {
@@ -94,7 +94,7 @@ public class PropertyManager implements CustomDedicatedServerProperties, CustomS
 
         try {
             fileOutputStream = new FileOutputStream(this.serverPropertiesFile);
-            this.serverProperties.store(fileOutputStream, "Minecraft server properties");
+            this.serverProperties.store(fileOutputStream, "Minecraft服务器属性");
         } catch (Exception exception) {
             LOGGER.warn("Failed to save {}", this.serverPropertiesFile, exception);
         } finally {
