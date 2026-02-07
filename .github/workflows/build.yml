@@ -1,5 +1,97 @@
 name: Run Gradle Build
 on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1.12.x → Java 8
+          - project: common-v1_12
+            java: 8
+          - project: fabric-v1_12
+            java: 8
+          - project: forge-v1_12
+            java: 8
+          - project: ornithe-v1_12
+            java: 8
+
+          # 1.20.x → Java 17
+          - project: common-v1_20
+            java: 17
+          - project: fabric-v1_20
+            java: 17
+          - project: forge-v1_20
+            java: 17
+          - project: neoforge-v1_20
+            java: 17
+          - project: quilt-v1_20
+            java: 17
+
+          # 1.20.3–1.20.6 → Java 17
+          - project: common-v1_20_3
+            java: 17
+          - project: fabric-v1_20_3
+            java: 17
+          - project: forge-v1_20_3
+            java: 17
+          - project: neoforge-v1_20_3
+            java: 17
+          - project: quilt-v1_20_3
+            java: 17
+
+          # 1.21.x → Java 21
+          - project: common-v1_21
+            java: 21
+          - project: fabric-v1_21
+            java: 21
+          - project: forge-v1_21
+            java: 21
+          - project: neoforge-v1_21
+            java: 21
+          - project: quilt-v1_21
+            java: 21
+
+          # 1.21.6–1.21.8 → Java 21
+          - project: common-v1_21_6
+            java: 21
+          - project: fabric-v1_21_6
+            java: 21
+          - project: forge-v1_21_6
+            java: 21
+          - project: neoforge-v1_21_6
+            java: 21
+          - project: quilt-v1_21_6
+            java: 21
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build project
+        run: ./gradlew :${{ matrix.project }}:build
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.project }}
+          path: '**/build/**'
+
+on:
   - push
   - pull_request
 
