@@ -28,13 +28,13 @@ if (target != null) {
     println("Including only target project: $target")
     include(target)
 
-    val version = target.substringAfter("v")
+    val version = target.substringAfter("v")   // e.g. "1_12"
     val commonVersioned = "common-v$version"
     include(commonVersioned)
-    project(":$commonVersioned").projectDir = file("common/$version")
+    project(":$commonVersioned").projectDir = file("common/v$version")
 
     val loader = target.substringBefore("-v")
-    project(":$target").projectDir = file("$loader/$version")
+    project(":$target").projectDir = file("$loader/v$version")
 
     // 始终 include 根 common，避免依赖报错
     include("common")
@@ -50,6 +50,7 @@ if (target != null) {
         "ornithe"
     ).forEach {
         include(it)
+        project(":$it").projectDir = file(it)
     }
 
     val supported = mapOf(
