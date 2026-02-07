@@ -36,9 +36,24 @@ if (target != null) {
     val loader = target.substringBefore("-v")
     project(":$target").projectDir = file("$loader/v$version")
 
-    // 始终 include 根 common，避免依赖报错
+    // 始终 include 根模块，避免依赖报错
     include("common")
     project(":common").projectDir = file("common")
+
+    include("fabric")
+    project(":fabric").projectDir = file("fabric")
+
+    include("forge")
+    project(":forge").projectDir = file("forge")
+
+    include("neoforge")
+    project(":neoforge").projectDir = file("neoforge")
+
+    include("quilt")
+    project(":quilt").projectDir = file("quilt")
+
+    include("ornithe")
+    project(":ornithe").projectDir = file("ornithe")
 } else {
     // 本地开发时 include 全部
     sequenceOf(
