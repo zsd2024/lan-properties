@@ -27,6 +27,4 @@ jobs:
         with:
           name: mod-jar
           path: |
-            fabric/build/libs/*.jar
-            forge/build/libs/*.jar
-            ornithe/build/libs/*.jar
+            '**/build/**'
