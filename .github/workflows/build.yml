@@ -1,4 +1,5 @@
-name: Run Gradle Build
+name: Matrix Build and Aggregate
+
 on:
   push:
   pull_request:
@@ -6,66 +7,114 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
         include:
           - project: common-v1_12
+            loader: common
+            version: v1_12
             java: 17
           - project: fabric-v1_12
+            loader: fabric
+            version: v1_12
             java: 17
           - project: forge-v1_12
+            loader: forge
+            version: v1_12
             java: 17
           - project: ornithe-v1_12
+            loader: ornithe
+            version: v1_12
             java: 17
 
           - project: common-v1_20
+            loader: common
+            version: v1_20
             java: 17
           - project: fabric-v1_20
+            loader: fabric
+            version: v1_20
             java: 17
           - project: forge-v1_20
+            loader: forge
+            version: v1_20
             java: 17
           - project: neoforge-v1_20
+            loader: neoforge
+            version: v1_20
             java: 17
           - project: quilt-v1_20
+            loader: quilt
+            version: v1_20
             java: 17
 
           - project: common-v1_20_3
+            loader: common
+            version: v1_20_3
             java: 17
           - project: fabric-v1_20_3
+            loader: fabric
+            version: v1_20_3
             java: 17
           - project: forge-v1_20_3
+            loader: forge
+            version: v1_20_3
             java: 17
           - project: neoforge-v1_20_3
+            loader: neoforge
+            version: v1_20_3
             java: 17
           - project: quilt-v1_20_3
+            loader: quilt
+            version: v1_20_3
             java: 17
 
           - project: common-v1_21
+            loader: common
+            version: v1_21
             java: 21
           - project: fabric-v1_21
+            loader: fabric
+            version: v1_21
             java: 21
           - project: forge-v1_21
+            loader: forge
+            version: v1_21
             java: 21
           - project: neoforge-v1_21
+            loader: neoforge
+            version: v1_21
             java: 21
           - project: quilt-v1_21
+            loader: quilt
+            version: v1_21
             java: 21
 
           - project: common-v1_21_6
+            loader: common
+            version: v1_21_6
             java: 21
           - project: fabric-v1_21_6
+            loader: fabric
+            version: v1_21_6
             java: 21
           - project: forge-v1_21_6
+            loader: forge
+            version: v1_21_6
             java: 21
           - project: neoforge-v1_21_6
+            loader: neoforge
+            version: v1_21_6
             java: 21
           - project: quilt-v1_21_6
+            loader: quilt
+            version: v1_21_6
             java: 21
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -76,11 +125,51 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build project
-        run: TARGET_PROJECT=${{ matrix.project }} ./gradlew :${{ matrix.project }}:build
+      - name: Build target
+        run: |
+          echo "TARGET_PROJECT=${{ matrix.project }}" >> $GITHUB_ENV
+          TARGET_PROJECT=${{ matrix.project }} ./gradlew :${{ matrix.project }}:build --no-daemon
+        env:
+          GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
 
-      - name: Upload build outputs
+      - name: Verify artifact path
+        run: |
+          ARTIFACT_PATH="${{ matrix.loader }}/${{ matrix.version }}/build/libs"
+          echo "Checking $ARTIFACT_PATH"
+          ls -la $ARTIFACT_PATH || (echo "No artifacts found at $ARTIFACT_PATH" && exit 1)
+
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.project }}
-          path: .
+          path: ${{ matrix.loader }}/${{ matrix.version }}/build/libs/*.jar
+
+  aggregate:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Inspect downloaded artifacts
+        run: ls -R artifacts
+
+      - name: Collect jars into release folder
+        run: |
+          mkdir -p release
+          # artifacts are stored under artifacts/<artifact-name>/
+          for d in artifacts/*; do
+            cp "$d"/*.jar release/ || true
+          done
+          ls -la release
+
+      - name: Create release bundle
+        run: zip -r release-bundle.zip release
+
+      - name: Upload aggregated artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-builds
+          path: release-bundle.zip
