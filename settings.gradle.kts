@@ -21,29 +21,36 @@ plugins {
 
 rootProject.name = "lan-properties"
 
-sequenceOf(
-    "common",
-    "fabric",
-    "forge",
-    "neoforge",
-    "quilt",
-    "ornithe"
-).forEach {
-    include(it)
-}
+// CI 环境变量控制目标项目
+val target = System.getenv("TARGET_PROJECT")
 
+if (target != null) {
+    println("Including only target project: $target")
+    include(target)
 
-val supported = mapOf(
-    "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-    "v1_21" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-    "v1_20_3" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-    "v1_20" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-    "v1_12" to listOf("common", "fabric", "forge", "ornithe"),
-)
+    // 自动 include 对应的 common 模块
+    val version = target.substringAfter("v")
+    val common = "common-v$version"
+    include(common)
+    project(":$common").projectDir = file("common/$version")
 
-supported.forEach { (version, loaders) ->
-    loaders.forEach { loader ->
-        include("$loader-$version")
-        project(":$loader-$version").projectDir = file("$loader/$version")
+    // 设置 projectDir
+    val loader = target.substringBefore("-v")
+    project(":$target").projectDir = file("$loader/$version")
+} else {
+    // 本地开发时 include 全部
+    val supported = mapOf(
+        "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+                          "v1_21"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+                          "v1_20_3" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+                          "v1_20"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+                          "v1_12"   to listOf("common", "fabric", "forge", "ornithe"),
+    )
+
+    supported.forEach { (version, loaders) ->
+        loaders.forEach { loader ->
+            include("$loader-$version")
+            project(":$loader-$version").projectDir = file("$loader/$version")
+        }
     }
 }
