@@ -28,23 +28,23 @@ if (target != null) {
     println("Including only target project: $target")
     include(target)
 
-    // 自动 include 对应的 common 模块
     val version = target.substringAfter("v")
     val common = "common-v$version"
     include(common)
-    project(":$common").projectDir = file("common/$version")
 
-    // 设置 projectDir
+    // 修正路径：目录是 common/v1_12，而不是 common/1_12
+    project(":$common").projectDir = file("common/v$version")
+
     val loader = target.substringBefore("-v")
-    project(":$target").projectDir = file("$loader/$version")
+    project(":$target").projectDir = file("$loader/v$version")
 } else {
     // 本地开发时 include 全部
     val supported = mapOf(
         "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-                          "v1_21"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-                          "v1_20_3" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-                          "v1_20"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
-                          "v1_12"   to listOf("common", "fabric", "forge", "ornithe"),
+        "v1_21"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+        "v1_20_3" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+        "v1_20"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
+        "v1_12"   to listOf("common", "fabric", "forge", "ornithe"),
     )
 
     supported.forEach { (version, loaders) ->
