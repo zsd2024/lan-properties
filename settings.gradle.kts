@@ -29,16 +29,29 @@ if (target != null) {
     include(target)
 
     val version = target.substringAfter("v")
-    val common = "common-v$version"
-    include(common)
-
-    // 修正路径：目录是 common/v1_12，而不是 common/1_12
-    project(":$common").projectDir = file("common/v$version")
+    val commonVersioned = "common-v$version"
+    include(commonVersioned)
+    project(":$commonVersioned").projectDir = file("common/$version")
 
     val loader = target.substringBefore("-v")
-    project(":$target").projectDir = file("$loader/v$version")
+    project(":$target").projectDir = file("$loader/$version")
+
+    // 始终 include 根 common，避免依赖报错
+    include("common")
+    project(":common").projectDir = file("common")
 } else {
     // 本地开发时 include 全部
+    sequenceOf(
+        "common",
+        "fabric",
+        "forge",
+        "neoforge",
+        "quilt",
+        "ornithe"
+    ).forEach {
+        include(it)
+    }
+
     val supported = mapOf(
         "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
         "v1_21"   to listOf("common", "fabric", "forge", "neoforge", "quilt"),
