@@ -48,6 +48,15 @@ val versionConfigs = mapOf(
         neoForgeVersion = "10",
         quiltVersion = "0.29.1"
     ),
+    "v25w14craftmine" to VersionConfig(
+        minecraftVersion = "25w14craftmine",
+        supportedMinecraftVersions = listOf("25w14craftmine"),
+        javaVersion = JavaVersion.VERSION_21,
+        mappings = MappingsConfig(
+            provider = "mojmap"
+        ),
+        fabricLoaderVersion = "0.16.14"
+    ),
     "v1_21" to VersionConfig(
         minecraftVersion = "1.21.4",
         supportedMinecraftVersions = listOf("1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5"),
@@ -67,10 +76,7 @@ val versionConfigs = mapOf(
         mappings = MappingsConfig(
             provider = "mojmap"
         ),
-        fabricLoaderVersion = "0.16.14",
-        forgeVersion = "49.2.0",
-        neoForgeVersion = "250",
-        quiltVersion = "0.29.1"
+        fabricLoaderVersion = "0.16.14"
     ),
     "v1_20" to VersionConfig(
         minecraftVersion = "1.20.2",
@@ -83,18 +89,6 @@ val versionConfigs = mapOf(
         forgeVersion = "48.1.0",
         neoForgeVersion = "93",
         quiltVersion = "0.29.1"
-    ),
-    "v1_12" to VersionConfig(
-        minecraftVersion = "1.12.2",
-        supportedMinecraftVersions = listOf("1.12", "1.12.1", "1.12.2"),
-        javaVersion = JavaVersion.VERSION_1_8,
-        mappings = MappingsConfig(
-            provider = "mcp",
-            version = "39-1.12"
-        ),
-        fabricLoaderVersion = "0.16.14",
-        forgeVersion = "14.23.5.2847",
-        ornitheVersion = "0.16.14"
     )
 )
 
@@ -142,7 +136,7 @@ subprojects {
         name in listOf("common", "fabric", "forge", "neoforge", "quilt", "ornithe") -> {
             return@subprojects
         }
-        name.matches(Regex("(common|fabric|forge|neoforge|quilt|ornithe)-v\\d+(_\\d+)+")) -> {
+        name.matches(Regex("(common|fabric|forge|neoforge|quilt|ornithe)-v[a-zA-Z0-9_]+")) -> {
             configureVersionSpecificModule()
         }
     }
@@ -154,32 +148,17 @@ publishMods {
 }
 
 fun Project.configureVersionSpecificModule() {
-    val (loader, versionKey) = when {
-        name.matches(Regex("common-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "common" to parts[1]
-        }
-        name.matches(Regex("fabric-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "fabric" to parts[1]
-        }
-        name.matches(Regex("forge-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "forge" to parts[1]
-        }
-        name.matches(Regex("neoforge-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "neoforge" to parts[1]
-        }
-        name.matches(Regex("quilt-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "quilt" to parts[1]
-        }
-        name.matches(Regex("ornithe-v\\d+(_\\d+)+")) -> {
-            val parts = name.split("-")
-            "ornithe" to parts[1]
-        }
-        else -> throw GradleException("Unknown project format: $name")
+    if (!name.matches(Regex("(common|fabric|forge|neoforge|quilt|ornithe)-v[a-zA-Z0-9_]+"))) {
+        throw GradleException("Unknown project format: $name")
+    }
+
+    val parts = name.split("-", limit = 2)
+    val loader = parts[0]
+    val versionKey = parts[1]
+
+    if (versionKey == "v1_12") {
+        println("Skipping $name: 1.12")
+        return
     }
 
     val config = versionConfigs[versionKey] ?: throw GradleException("No config for version: $versionKey")
