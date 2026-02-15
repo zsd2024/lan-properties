@@ -111,6 +111,16 @@ jobs:
             loader: quilt
             version: v1_21_6
             java: 21
+          - project: common-v25w14craftmine
+            loader: common
+            version: v25w14craftmine
+            java: 21
+
+          - project: fabric-v25w14craftmine
+            loader: fabric
+            version: v25w14craftmine
+            java: 21
+
 
     steps:
       - name: Checkout

@@ -76,7 +76,10 @@ val versionConfigs = mapOf(
         mappings = MappingsConfig(
             provider = "mojmap"
         ),
-        fabricLoaderVersion = "0.16.14"
+        fabricLoaderVersion = "0.16.14",
+        forgeVersion = "49.2.0",
+        neoForgeVersion = "250",
+        quiltVersion = "0.29.1"
     ),
     "v1_20" to VersionConfig(
         minecraftVersion = "1.20.2",
@@ -89,6 +92,18 @@ val versionConfigs = mapOf(
         forgeVersion = "48.1.0",
         neoForgeVersion = "93",
         quiltVersion = "0.29.1"
+    ),
+    "v1_12" to VersionConfig(
+        minecraftVersion = "1.12.2",
+        supportedMinecraftVersions = listOf("1.12", "1.12.1", "1.12.2"),
+        javaVersion = JavaVersion.VERSION_1_8,
+        mappings = MappingsConfig(
+            provider = "mcp",
+            version = "39-1.12"
+        ),
+        fabricLoaderVersion = "0.16.14",
+        forgeVersion = "14.23.5.2847",
+        ornitheVersion = "0.16.14"
     )
 )
 
@@ -156,10 +171,10 @@ fun Project.configureVersionSpecificModule() {
     val loader = parts[0]
     val versionKey = parts[1]
 
-    if (versionKey == "v1_12") {
-        println("Skipping $name: 1.12")
-        return
-    }
+//    if (versionKey == "v1_12") {
+//        println("Skipping $name: 1.12")
+//        return
+//    }
 
     val config = versionConfigs[versionKey] ?: throw GradleException("No config for version: $versionKey")
 
