@@ -21,10 +21,7 @@ plugins {
 
 rootProject.name = "lan-properties"
 
-// CI 环境变量控制目标项目
-val target = System.getenv("TARGET_PROJECT")
-
-// 支持的版本与其对应的 loader
+// 支持的版本与 loader（本地开发用，也可以给 CI 参考）
 val supported = mapOf(
     "v1_21_6" to listOf("common", "fabric", "forge", "neoforge", "quilt"),
     "v25w14craftmine" to listOf("common", "fabric"),
@@ -34,12 +31,15 @@ val supported = mapOf(
     "v1_12" to listOf("common", "fabric", "forge", "ornithe"),
 )
 
+// CI 环境变量控制目标项目
+val target = System.getenv("TARGET_PROJECT")
+
 if (target != null) {
     println("Including only target project: $target")
-
     include(target)
 
-    val version = target.substringAfter("v")   // e.g. "1_12"
+    // e.g. target = "common-v1_12" → version = "1_12"
+    val version = target.substringAfter("v")
     val commonVersioned = "common-v$version"
     include(commonVersioned)
     project(":$commonVersioned").projectDir = file("common/v$version")
@@ -47,14 +47,26 @@ if (target != null) {
     val loader = target.substringBefore("-v")
     project(":$target").projectDir = file("$loader/v$version")
 
-    // include 该版本支持的 loader
-    val versionKey = "v$version"
-    supported[versionKey]?.forEach { loaderName ->
-        include(loaderName)
-        project(":$loaderName").projectDir = file(loaderName)
-    }
+    // 始终 include 根模块，避免依赖报错
+    include("common")
+    project(":common").projectDir = file("common")
+
+    include("fabric")
+    project(":fabric").projectDir = file("fabric")
+
+    include("forge")
+    project(":forge").projectDir = file("forge")
+
+    include("neoforge")
+    project(":neoforge").projectDir = file("neoforge")
+
+    include("quilt")
+    project(":quilt").projectDir = file("quilt")
+
+    include("ornithe")
+    project(":ornithe").projectDir = file("ornithe")
 } else {
-    // 本地开发 include 全部
+    // 本地开发时 include 根模块
     sequenceOf(
         "common",
         "fabric",
@@ -67,10 +79,12 @@ if (target != null) {
         project(":$it").projectDir = file(it)
     }
 
+    // 为每个版本 include 对应的 loader-vX
     supported.forEach { (version, loaders) ->
         loaders.forEach { loader ->
-            include("$loader-$version")
-            project(":$loader-$version").projectDir = file("$loader/$version")
+            val module = "$loader-$version"
+            include(module)
+            project(":$module").projectDir = file("$loader/$version")
         }
     }
 }
