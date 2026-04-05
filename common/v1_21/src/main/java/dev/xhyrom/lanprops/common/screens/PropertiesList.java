@@ -61,7 +61,13 @@ public class PropertiesList extends ContainerObjectSelectionList<PropertiesList.
         private static final int PADDING = 160;
 
         public PropertyEntry(String propertyKey, Class<?> type) throws IllegalAccessException {
-            this.propertyName = Component.literal(StringUtils.kebabCaseToTitleCase(propertyKey));
+            // 使用I18n系统进行属性名称翻译
+            String translationKey = "lan_properties.property." + propertyKey;
+            if (I18n.hasKey(translationKey)) {
+                this.propertyName = Component.translatable(translationKey);
+            } else {
+                this.propertyName = Component.literal(StringUtils.kebabCaseToTitleCase(propertyKey));
+            }
 
             final Properties properties = ((CustomDedicatedServerProperties) serverProperties).lan_properties$properties();
 
@@ -69,7 +75,7 @@ public class PropertiesList extends ContainerObjectSelectionList<PropertiesList.
             this.editWidget = createWidget(type, currentValue, (raw, serialized) -> {
                 properties.put(propertyKey, serialized);
 
-                LanPropertiesClient.LOGGER.info("已将属性'{}'更新为'{}'", propertyKey, serialized);
+                LanPropertiesClient.LOGGER.info(I18n.format("lan_properties.log.updated_property", propertyKey, serialized));
             });
         }
 

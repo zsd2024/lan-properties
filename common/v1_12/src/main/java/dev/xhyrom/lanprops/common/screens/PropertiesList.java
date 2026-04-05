@@ -126,7 +126,13 @@ public class PropertiesList extends GuiListExtended {
         public PropertyEntry(PropertiesList parent, String propertyKey, Class<?> type) throws IllegalAccessException {
             this.parent = parent;
             this.mc = Minecraft.getMinecraft();
-            this.propertyName = StringUtils.kebabCaseToTitleCase(propertyKey);
+            // 使用I18n系统进行属性名称翻译
+            String translationKey = "lan_properties.property." + propertyKey;
+            if (I18n.hasKey(translationKey)) {
+                this.propertyName = I18n.format(translationKey);
+            } else {
+                this.propertyName = StringUtils.kebabCaseToTitleCase(propertyKey);
+            }
             this.propertyType = type;
 
             final Properties properties = serverProperties.lan_properties$properties();
