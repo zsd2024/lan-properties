@@ -40,7 +40,7 @@ public class PropertiesList extends GuiListExtended {
                 this.listEntries[i] = new PropertyEntry(this, data.name(), data.type());
             } catch (IllegalAccessException e) {
                 LanPropertiesClient.LOGGER.error(
-                        "无法为属性'{}'创建条目（索引{}）", data.name(), i, e);
+                        I18n.format("lan_properties.log.failed_create_entry", data.name()) + " (index " + i + ")", e);
             }
         }
     }
@@ -134,7 +134,7 @@ public class PropertiesList extends GuiListExtended {
 
             this.callback = (raw, serialized) -> {
                 properties.put(propertyKey, serialized);
-                LanPropertiesClient.LOGGER.info("已将属性'{}'更新为'{}'", propertyKey, serialized);
+                LanPropertiesClient.LOGGER.info(I18n.format("lan_properties.log.updated_property", propertyKey, serialized));
             };
 
             if (type == boolean.class) {

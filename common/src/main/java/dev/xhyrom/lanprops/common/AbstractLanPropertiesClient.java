@@ -8,6 +8,6 @@ public abstract class AbstractLanPropertiesClient {
     public static final TaggedLogger LOGGER = Logger.tag(MOD_ID);
 
     public static void init() {
-        LOGGER.info("LAN Properties模组已初始化。");
+        LOGGER.info("LAN Properties mod initialized.");
     }
 }

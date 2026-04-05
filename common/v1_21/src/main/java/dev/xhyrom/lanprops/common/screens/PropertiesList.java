@@ -42,7 +42,7 @@ public class PropertiesList extends ContainerObjectSelectionList<PropertiesList.
                     try {
                         this.addEntry(new PropertyEntry(data.name(), data.type()));
                     } catch (IllegalAccessException e) {
-                        LanPropertiesClient.LOGGER.error("无法为属性'{}'创建条目", data.name(), e);
+                        LanPropertiesClient.LOGGER.error("Failed to create entry for property '{}'", data.name(), e);
                     }
                 });
 
