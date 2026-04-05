@@ -68,7 +68,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
         this.setAllowPvp(this.lan_properties$settings.getBooleanProperty("pvp", true));
         this.setAllowFlight(this.lan_properties$settings.getBooleanProperty("allow-flight", false));
         this.setResourcePack(this.lan_properties$settings.getStringProperty("resource-pack", ""), this.lan_properties$loadResourcePackSHA());
-        this.setMOTD(this.lan_properties$settings.getStringProperty("motd", I18n.format("lan_properties.default.motd")));
+        this.setMOTD(this.lan_properties$settings.getStringProperty("motd", "A Minecraft Server"));
         this.setPlayerIdleTimeout(this.lan_properties$settings.getIntProperty("player-idle-timeout", 0));
         if (this.lan_properties$settings.getIntProperty("difficulty", 1) < 0) {
             this.lan_properties$settings.setProperty("difficulty", 0);
@@ -91,9 +91,9 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
     public String lan_properties$loadResourcePackSHA() {
         if (this.lan_properties$settings.hasProperty("resource-pack-hash")) {
             if (this.lan_properties$settings.hasProperty("resource-pack-sha1")) {
-                LOGGER.warn(I18n.format("lan_properties.warn.resource_pack_hash_deprecated_both"));
+                LOGGER.warn("resource-pack-hash is deprecated and coexists with resource-pack-sha1. resource-pack-hash will be ignored.");
             } else {
-                LOGGER.warn(I18n.format("lan_properties.warn.resource_pack_hash_deprecated"));
+                LOGGER.warn("resource-pack-hash is deprecated. Please use resource-pack-sha1 instead.");
                 this.lan_properties$settings.getStringProperty("resource-pack-sha1", this.lan_properties$settings.getStringProperty("resource-pack-hash", ""));
                 this.lan_properties$settings.removeProperty("resource-pack-hash");
             }
@@ -101,11 +101,11 @@ public abstract class IntegratedServerMixin extends MinecraftServer implements C
 
         String string = this.lan_properties$settings.getStringProperty("resource-pack-sha1", "");
         if (!string.isEmpty() && !RESOURCE_PACK_SHA1_PATTERN.matcher(string).matches()) {
-            LOGGER.warn(I18n.format("lan_properties.warn.resource_pack_sha1_invalid"));
+            LOGGER.warn("The sha1 for ressource-pack-sha1 is invalid");
         }
 
         if (!this.lan_properties$settings.getStringProperty("resource-pack", "").isEmpty() && string.isEmpty()) {
-            LOGGER.warn(I18n.format("lan_properties.warn.resource_pack_no_sha1"));
+            LOGGER.warn("You specified a resource pack but did not provide a sha1 hash. The client will only update the resource pack when you change the resource pack name.");
         }
 
         return string;
